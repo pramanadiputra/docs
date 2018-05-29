@@ -25,20 +25,19 @@
 <a name="introduction"></a>
 ## Introduction
 
-The Eloquent ORM included with Laravel provides a beautiful, simple ActiveRecord implementation for working with your database. Each database table has a corresponding "Model" which is used to interact with that table. Models allow you to query for data in your tables, as well as insert new records into the table.
+ORM Eloquent memberikan pengembang Laravel kemudahan dan kerapian dalam pengimplementasian ActiveRecord yang simpel saat anda berkerja dengan database. Setiap tabel pada database memiliki representasi sebuah "Model" yang digunakan untuk berinteraksi dengan tabel tersebut. Model - model memungkinkanmu untuk melakukan kueri data pada tabel - tabel, serta memasukkan data baru ke tabel - tabel. 
 
-Before getting started, be sure to configure a database connection in `config/database.php`. For more information on configuring your database, check out [the documentation](/docs/{{version}}/database#configuration).
+Sebelum memulai, ada baiknya untuk mengkonfigurasi koneksi database di `config/database.php`. Untuk informasi lebih lanjut, cek [dokumentasi](/docs/{{version}}/database#configuration).
 
 <a name="defining-models"></a>
 ## Defining Models
 
-To get started, let's create an Eloquent model. Models typically live in the `app` directory, but you are free to place them anywhere that can be auto-loaded according to your `composer.json` file. All Eloquent models extend `Illuminate\Database\Eloquent\Model` class.
+Untuk memulai, ayo buat sebuah model Eloquent. Biasanya model - model akan diletakkan di dalam direktori `app`, namun tentu saja anda bebas untuk meletakkannya dimana saja asalkan dapat di *loading* oleh pengaturan `composer.json` anda. Semua model - model Eloquent menurunkan sifat dari kelas `Illuminate\Database\Eloquent\Model`. 
 
-The easiest way to create a model instance is using the `make:model` [Artisan command](/docs/{{version}}/artisan):
+Cara paling simpel dalam membuat sebuah model adalah dengan menjalankan  [perintah artisan](/docs/{{version}}/artisan) : `make:model`
 
     php artisan make:model Flight
-
-If you would like to generate a [database migration](/docs/{{version}}/migrations) when you generate the model, you may use the `--migration` or `-m` option:
+Jika anda langsung ingin meng-generasi sebuah [migrasi database](/docs/{{version}}/migrations) disaat anda membuat sebuah model, anda bisa gunakan opsi `--migration` atau cukup `-m`. 
 
     php artisan make:model Flight --migration
 
@@ -47,7 +46,7 @@ If you would like to generate a [database migration](/docs/{{version}}/migration
 <a name="eloquent-model-conventions"></a>
 ### Eloquent Model Conventions
 
-Now, let's look at an example `Flight` model, which we will use to retrieve and store information from our `flights` database table:
+Sekarang, ayo lihat contoh model `Flight`, yang akan kita gunakan untuk menerima dan mengirimkan data ke tabel `flights` di database.
 
     <?php
 
@@ -62,7 +61,7 @@ Now, let's look at an example `Flight` model, which we will use to retrieve and 
 
 #### Table Names
 
-Note that we did not tell Eloquent which table to use for our `Flight` model. By convention, the "snake case", plural name of the class will be used as the table name unless another name is explicitly specified. So, in this case, Eloquent will assume the `Flight` model stores records in the `flights` table. You may specify a custom table by defining a `table` property on your model:
+Perhatikan bahwa kita tidak memberitahu Eloquent tabel database yang mana yang kita maksud untuk model `Flight`. Secara bawaan, Eloquent akan langsung otomatis mengetahui tabel database mana yang dimaksud dengan melakukan "snake case", pada setiap nama tabel di database karena pada umumnya nama tabel akan selalu bersifat *plural* yakni memiliki akhiran **s**. Pada contoh ini Eloquent akan berasumsi bahwa model `Flight` merupakan representasi tabel database `Flights`.  Tentu saja anda juga bisa mengkostumisasi nama tabel yang berepresentasi di database dengan model tersebut. 
 
     <?php
 
@@ -82,13 +81,13 @@ Note that we did not tell Eloquent which table to use for our `Flight` model. By
 
 #### Primary Keys
 
-Eloquent will also assume that each table has a primary key column named `id`. You may define a protected `$primaryKey` property to override this convention.
+Eloquent akan berasumsi bahwa setiap tabel memiliki sebuah *primary key* yang dinamakan `id`. Anda bisa mengubahnya dengan mendefinisikan `protected $primaryKey`. 
 
-In addition, Eloquent assumes that the primary key is an incrementing integer value, which means that by default the primary key will be cast to an `int` automatically. If you wish to use a non-incrementing or a non-numeric primary key you must set the public `$incrementing` property on your model to `false`. If your primary key is not an integer, you should set the protected `$keyType` property on your model to `string`.
+Dan juga, Eloquent berasumsi bahwa sebuah primary key akan bersifat *increment* atau selalu bertambah nilainya, yang mana secara bawaan Eloquent akan menganggap sebuah primary key akan bertipe `int`. Jika anda ingin Eloquent  menganggap bahwa primary key anda merupakan *non increment* ataupun bukan bertipe `int`, anda dapat mengubahnya dengan mendefinisikan `public $incrementing = false`. Dan untuk primary key yang bukan bertipe `int`, anda harus mendefinisikan `protected $keyType` menjadi `string` pada model anda. 
 
 #### Timestamps
 
-By default, Eloquent expects `created_at` and `updated_at` columns to exist on your tables.  If you do not wish to have these columns automatically managed by Eloquent, set the `$timestamps` property on your model to `false`:
+Secara bawaan, Eloquent menganggap kolom `created_at` dan `updated_at` sudah pasti ada pada tabel - tabel di database anda. Jika anda tidak ingin kolom - kolom tersebut diatur oleh Eloquent, set `public $timestamps = false` di model anda.
 
     <?php
 
@@ -106,7 +105,7 @@ By default, Eloquent expects `created_at` and `updated_at` columns to exist on y
         public $timestamps = false;
     }
 
-If you need to customize the format of your timestamps, set the `$dateFormat` property on your model. This property determines how date attributes are stored in the database, as well as their format when the model is serialized to an array or JSON:
+Jika anda ingin mengkostumisasi format pada timestamps anda, set `$dateFormat` pada model anda. Atribut ini menentukan bagaimana atribut tanggal akan disimpan ke database, begitu juga dengan format yang diserialisasi menjadi array atau JSON.
 
     <?php
 
@@ -124,7 +123,7 @@ If you need to customize the format of your timestamps, set the `$dateFormat` pr
         protected $dateFormat = 'U';
     }
 
-If you need to customize the names of the columns used to store the timestamps, you may set the `CREATED_AT` and `UPDATED_AT` constants in your model:
+Jika anda mengkostumisasi nama dari kolom - kolom untuk menyimpan timestamps, anda mungkin harus mendefinisikan `CREATED_AT` dan `UPDATED_AT` sebagai konstanta pada model anda. 
 
     <?php
 
@@ -136,7 +135,7 @@ If you need to customize the names of the columns used to store the timestamps, 
 
 #### Database Connection
 
-By default, all Eloquent models will use the default database connection configured for your application. If you would like to specify a different connection for the model, use the `$connection` property:
+Secara bawaan, semua model Eloquent akan menggunakan koneksi database yang sudah dikonfigurasikan di aplikasi anda. Jika anda ingin mengkonfigurasikan koneksi yang berbeda untuk sebuah model, set atribut `$connection`.
 
     <?php
 
@@ -157,7 +156,7 @@ By default, all Eloquent models will use the default database connection configu
 <a name="retrieving-models"></a>
 ## Retrieving Models
 
-Once you have created a model and [its associated database table](/docs/{{version}}/migrations#writing-migrations), you are ready to start retrieving data from your database. Think of each Eloquent model as a powerful [query builder](/docs/{{version}}/queries) allowing you to fluently query the database table associated with the model. For example:
+Seketika anda sudah membuat sebuah model dan mengasosiasikannya dengan tabel database, model anda sudah siap untuk menerima data dari tabel database anda. Setiap model Eloquent memiliki fitur yang sama powerfulnya dengan [query builder](/docs/{{version}}/queries) yang memungkinkan manajemen kueri dengan asosiasi model. Contohnya: 
 
     <?php
 
@@ -171,25 +170,25 @@ Once you have created a model and [its associated database table](/docs/{{versio
 
 #### Adding Additional Constraints
 
-The Eloquent `all` method will return all of the results in the model's table. Since each Eloquent model serves as a [query builder](/docs/{{version}}/queries), you may also add constraints to queries, and then use the `get` method to retrieve the results:
+Setiap method `all` pada Eloquent akan memberikan semua data yang ada pada sebuah tabel. Dan juga karena model Eloquent turut mengindikasikan penggunaan [query builder](/docs/{{version}}/queries), maka anda bisa menambahkan suatu kosntrain pada kueri - kueri anda, dan gunakan `get` untuk menerima pengambilan data:
 
     $flights = App\Flight::where('active', 1)
                    ->orderBy('name', 'desc')
                    ->take(10)
                    ->get();
 
-> {tip} Since Eloquent models are query builders, you should review all of the methods available on the [query builder](/docs/{{version}}/queries). You may use any of these methods in your Eloquent queries.
+> {tip} Karena model - model Eloquent juga merupakan query builders, anda bisa saja mengecek semua method - method yang ada pada [query builder](/docs/{{version}}/queries). Anda bisa menggunakan salah satu dari keseluruhan method - method tersebut pada kueri Eloquent anda. 
 
 <a name="collections"></a>
 ### Collections
 
-For Eloquent methods like `all` and `get` which retrieve multiple results, an instance of `Illuminate\Database\Eloquent\Collection` will be returned. The `Collection` class provides [a variety of helpful methods](/docs/{{version}}/eloquent-collections#available-methods) for working with your Eloquent results:
+Untuk semua method - method seperti `all` dan `get` yang menerima hasil data secara jamak, merupakan sebuah *instance* dari kelas `Illuminate\Database\Eloquent\Collection`. Maka itu [method - method yang berguna](/docs/{{version}}/eloquent-collections#available-methods) dari kelas `Collection` dapat anda gunakan pada model Eloquent anda:
 
     $flights = $flights->reject(function ($flight) {
         return $flight->cancelled;
     });
 
-Of course, you may also loop over the collection like an array:
+Dan tentunya, anda juga bisa melakukan perulangan pada koleksi seperti sebuah array: 
 
     foreach ($flights as $flight) {
         echo $flight->name;
@@ -198,7 +197,7 @@ Of course, you may also loop over the collection like an array:
 <a name="chunking-results"></a>
 ### Chunking Results
 
-If you need to process thousands of Eloquent records, use the `chunk` command. The `chunk` method will retrieve a "chunk" of Eloquent models, feeding them to a given `Closure` for processing. Using the `chunk` method will conserve memory when working with large result sets:
+Jika anda butuh melakukan pemrosesan pengambilan data yang berupa ribuan, gunakanlah perintah `chunk`. Method `chunk` akan menerima data - data tersebut untuk model Eloquent, dan mengirimkannya pada `Closure` yang terkait untuk melakukan pemrosesan. Penggunaan `chunk` untuk menambil data yang banyaknya ribuan akan lebih menghemat penggunaan memori dan kinerja server.
 
     Flight::chunk(200, function ($flights) {
         foreach ($flights as $flight) {
@@ -206,11 +205,11 @@ If you need to process thousands of Eloquent records, use the `chunk` command. T
         }
     });
 
-The first argument passed to the method is the number of records you wish to receive per "chunk". The Closure passed as the second argument will be called for each chunk that is retrieved from the database. A database query will be executed to retrieve each chunk of records passed to the Closure.
+Argumen pertama yang dikirimkan ke method adalah angka data yang anda harapkan untuk terima per "chunk". Dan *Closure* yang bersangkutan mengirimkan argumen kedua yang akan memanggil masing-masing chunk untuk diterima dari database. Sebuah kueri database akan diseksekusi untuk menerima data chunk tersebut.
 
 #### Using Cursors
 
-The `cursor` method allows you to iterate through your database records using a cursor, which will only execute a single query. When processing large amounts of data, the `cursor` method may be used to greatly reduce your memory usage:
+Menggunakan method `cursor` akan memungkinkan anda untuk melakukan iterasi pada barisan data di database anda, yang mana kemudian akan mengeksekusi satu kueri. Ketika memproses data dalam jumlah banyak, method `cursor` akan sangat membantu dalam mengurangi penggunaan memori anda:
 
     foreach (Flight::where('foo', 'bar')->cursor() as $flight) {
         //
@@ -219,27 +218,26 @@ The `cursor` method allows you to iterate through your database records using a 
 <a name="retrieving-single-models"></a>
 ## Retrieving Single Models / Aggregates
 
-Of course, in addition to retrieving all of the records for a given table, you may also retrieve single records using `find` or `first`. Instead of returning a collection of models, these methods return a single model instance:
+Tentu saja, selain pengambilan data dalam jumlah lebih dari satu, anda bisa menerima data tunggal menggunakan `find` atau `first`. Kedua method ini akan mengembalikan *instance* dari model, daripada koleksi model - model. 
 
     // Retrieve a model by its primary key...
     $flight = App\Flight::find(1);
-
+    
     // Retrieve the first model matching the query constraints...
     $flight = App\Flight::where('active', 1)->first();
 
-You may also call the `find` method with an array of primary keys, which will return a collection of the matching records:
+Anda bisa juga menggunakan method `find` untuk array dari beberapa primary key, yang akan mengembalikan koleksi dari record-record tersebut.
 
     $flights = App\Flight::find([1, 2, 3]);
 
 #### Not Found Exceptions
 
-Sometimes you may wish to throw an exception if a model is not found. This is particularly useful in routes or controllers. The `findOrFail` and `firstOrFail` methods will retrieve the first result of the query; however, if no result is found, a `Illuminate\Database\Eloquent\ModelNotFoundException` will be thrown:
+Kadang-kala anda mungkin ingin melemparkan sebuah eksepsi jika suatu data tidak ditemukan. Biasanya berguna untuk route dan kontroller. Method - method `findOrFail` dan `firstOrFail` akan mengambil data dari database; tetapi, jika tidak ditemukan maka akan melemparkan eksepsi dari kelas `Illuminate\Database\Eloquent\ModelNotFoundException`: 
 
     $model = App\Flight::findOrFail(1);
 
     $model = App\Flight::where('legs', '>', 100)->firstOrFail();
-
-If the exception is not caught, a `404` HTTP response is automatically sent back to the user. It is not necessary to write explicit checks to return `404` responses when using these methods:
+Jika eksepsi tidak tertangkap, maka respon HTTP `404` yang akan dikirimkan otomatis kepada pengguna. 
 
     Route::get('/api/flights/{id}', function ($id) {
         return App\Flight::findOrFail($id);
@@ -248,7 +246,7 @@ If the exception is not caught, a `404` HTTP response is automatically sent back
 <a name="retrieving-aggregates"></a>
 ### Retrieving Aggregates
 
-You may also use the `count`, `sum`, `max`, and other [aggregate methods](/docs/{{version}}/queries#aggregates) provided by the [query builder](/docs/{{version}}/queries). These methods return the appropriate scalar value instead of a full model instance:
+Jika anda menggunakan method - method `count`, `sum`, `max`, dan [method agregat](/docs/{{version}}/queries#aggregates) yang disediakan oleh [query builder](/docs/{{version}}/queries). Akan mengembalikan nilai skalar ketimbang *instance* sebuah model:
 
     $count = App\Flight::where('active', 1)->count();
 
@@ -260,7 +258,7 @@ You may also use the `count`, `sum`, `max`, and other [aggregate methods](/docs/
 <a name="inserts"></a>
 ### Inserts
 
-To create a new record in the database, create a new model instance, set attributes on the model, then call the `save` method:
+Untuk membuat sebuah record baru di database, buatlah sebuah *instance* baru dari suatu model, dan set atribut-atribut pada model, lalu panggil method `save`: 
 
     <?php
 
@@ -269,7 +267,7 @@ To create a new record in the database, create a new model instance, set attribu
     use App\Flight;
     use Illuminate\Http\Request;
     use App\Http\Controllers\Controller;
-
+    
     class FlightController extends Controller
     {
         /**
@@ -281,21 +279,21 @@ To create a new record in the database, create a new model instance, set attribu
         public function store(Request $request)
         {
             // Validate the request...
-
+    
             $flight = new Flight;
-
+    
             $flight->name = $request->name;
-
+    
             $flight->save();
         }
     }
 
-In this example, we assign the `name` parameter from the incoming HTTP request to the `name` attribute of the `App\Flight` model instance. When we call the `save` method, a record will be inserted into the database. The `created_at` and `updated_at` timestamps will automatically be set when the `save` method is called, so there is no need to set them manually.
+Pada contoh ini, kita kaitkan parameter `name` dari request HTTP yang datang pada atribut `name` di dalam model `App\Flight`. Ketika kita memanggil method `save`, sebuah record akan dikirimkan ke database. timestamps `created_at` dan `updated_at` akan otomatis diset saat `save` dipanggil, jadi tidak perlu set secara manual. 
 
 <a name="updates"></a>
 ### Updates
 
-The `save` method may also be used to update models that already exist in the database. To update a model, you should retrieve it, set any attributes you wish to update, and then call the `save` method. Again, the `updated_at` timestamp will automatically be updated, so there is no need to manually set its value:
+Method `save` juga dapat digunakan untuk melakukan update pada model - model yang sudah ada di database. Untuk mengupdate sebuah model, anda harus mencari record tersebut terlebih dulu, lalu set atribut apa yang anda ingin update, dan panggil method `save` untuk menyimpan update tersebut. Dan juga timestamp `updated_at` akan otomatis diperbarui, jadi tidak perlu secara manual mengubah nilainya.
 
     $flight = App\Flight::find(1);
 
@@ -307,22 +305,24 @@ The `save` method may also be used to update models that already exist in the da
 
 Updates can also be performed against any number of models that match a given query. In this example, all flights that are `active` and have a `destination` of `San Diego` will be marked as delayed:
 
+Update juga bisa dilakukan secara masal, pada contoh ini, semua penerbangan yang `active` dan untuk `destination` pada daerah `San Diego` akan diubah menjadi `delayed`:
+
     App\Flight::where('active', 1)
               ->where('destination', 'San Diego')
               ->update(['delayed' => 1]);
 
-The `update` method expects an array of column and value pairs representing the columns that should be updated.
+Method `update` mengarapkan suatu kolom dan juga nilainya untuk diupdate.
 
-> {note} When issuing a mass update via Eloquent, the `saved` and `updated` model events will not be fired for the updated models. This is because the models are never actually retrieved when issuing a mass update.
+> {note} Ketika melakukan update masal melalui Eloquent, event `saved` dan `updated` tidak akan dijalankan untuk memperbarui model - model. Ini karena setiap model sebenarnya tidak terpanggil saat update masal dilakukan.
 
 <a name="mass-assignment"></a>
 ### Mass Assignment
 
-You may also use the `create` method to save a new model in a single line. The inserted model instance will be returned to you from the method. However, before doing so, you will need to specify either a `fillable` or `guarded` attribute on the model, as all Eloquent models protect against mass-assignment by default.
+Anda bisa menggunakan method `create` untuk menyimpan atau membuat model baru hanya dengan satu baris. Model yang disisipkan akan dikembalikan dari method tersebut. Tetapi, sebelum melakukannya, anda perlu menentukan apakah atribut pada model bersifat `fillable` atau `guarded`, karena pada dasarnya semua model - model Eloquent mencegah pengisian-data secara masal.
 
-A mass-assignment vulnerability occurs when a user passes an unexpected HTTP parameter through a request, and that parameter changes a column in your database you did not expect. For example, a malicious user might send an `is_admin` parameter through an HTTP request, which is then passed into your model's `create` method, allowing the user to escalate themselves to an administrator.
+Pemberian-data secara masal atau *mass-assignment* memiliki kerentanan disaat suatu pengguna mengirimkan paramter HTTP yang tidak diinginkan melalui sebuah request, dan parameter tersebut mengubah suatu kolom di database anda. Sebagai contoh, pengguna jahat mungkin akan mengirimkan parameter `is_admin` melalui request HTTP, yang akan terlampau pada model anda dengan method `create`, memungkinkan pengguna jahat tersebut membuat akunnya menjadi admin. 
 
-So, to get started, you should define which model attributes you want to make mass assignable. You may do this using the `$fillable` property on the model. For example, let's make the `name` attribute of our `Flight` model mass assignable:
+Lantas, untuk memulai, anda harus mendefisinikan atau menentukan atribut-atribut apa saja yang boleh untuk dilakukan *mass assignment*. Dengan menyisipkan `$fillable` pada model. Untuk contoh, ayo jadikan atribut `name` pada model `Flight` sebagai atribut yang bisa *mass assignment*:
 
     <?php
 
@@ -340,17 +340,16 @@ So, to get started, you should define which model attributes you want to make ma
         protected $fillable = ['name'];
     }
 
-Once we have made the attributes mass assignable, we can use the `create` method to insert a new record in the database. The `create` method returns the saved model instance:
+Ketika kita sudah mendefinisikan atribut sebagai *mass assigment*, kita bisa gunakan method `create` untuk menyimpan sebuah record baru di database. Method `create` akan mengembalikan *instance* dari model. 
 
     $flight = App\Flight::create(['name' => 'Flight 10']);
-
-If you already have a model instance, you may use the `fill` method to populate it with an array of attributes:
+Jika anda sudah punya *instance* dari suatu model, anda bisa gunakan method `fill` untuk mempolasikan atribut-atribut sebagai array:
 
     $flight->fill(['name' => 'Flight 22']);
 
 #### Guarding Attributes
 
-While `$fillable` serves as a "white list" of attributes that should be mass assignable, you may also choose to use `$guarded`. The `$guarded` property should contain an array of attributes that you do not want to be mass assignable. All other attributes not in the array will be mass assignable. So, `$guarded` functions like a "black list". Of course, you should use either `$fillable` or `$guarded` - not both. In the example below, all attributes **except for `price`** will be mass assignable:
+Ketika `$fillable` merupakan atribut seperti `white list` atau atribut yang boleh dianggap sebagai `mass assignment`, anda juga bisa memilih suatu atribut sebagai kebalikannya dengan menggunakan `$guarded`. Atribut yang anda ingin lindungi harus anda isi dengan `$guarded`, dan hanya atribut tersebut saja yang tidak `mass assignment`, atribut lain akan menjadi `mass assignment`. Tentu saja anda harus memilih menggunakan `fillable` atau `guarded`, tidak boleh menggunakan keduanya disaat bersamaan. Seperti pada contoh di bawah, semua atribut **terkecuali untuk** **`price`** akan  bersifat *mass assignment*.
 
     <?php
 
@@ -368,7 +367,7 @@ While `$fillable` serves as a "white list" of attributes that should be mass ass
         protected $guarded = ['price'];
     }
 
-If you would like to make all attributes mass assignable, you may define the `$guarded` property as an empty array:
+Jika anda ingin membuat semua atribut sebagai *mass assignment*, silahkan berikan properti `$guarded` dengan array kosong:
 
     /**
      * The attributes that aren't mass assignable.
@@ -382,21 +381,21 @@ If you would like to make all attributes mass assignable, you may define the `$g
 
 #### `firstOrCreate`/ `firstOrNew`
 
-There are two other methods you may use to create models by mass assigning attributes: `firstOrCreate` and `firstOrNew`. The `firstOrCreate` method will attempt to locate a database record using the given column / value pairs. If the model can not be found in the database, a record will be inserted with the attributes from the first parameter, along with those in the optional second parameter.
+Ada dua method yang anda mungkin gunakan untuk membuat data pada atribut *mass assignment*: `firstOrCreate` dan `firstOrNew`. Method `firstOrCreate` akan mencoba untuk mencari data pada suatu database, jika tidak ditemukan maka data tersebut akan dimasukkan ke database. Sebuah data akan dimasukkan dengan parameter pertama, dan yang lainnya pada parameter kedua. 
 
-The `firstOrNew` method, like `firstOrCreate` will attempt to locate a record in the database matching the given attributes. However, if a model is not found, a new model instance will be returned. Note that the model returned by `firstOrNew` has not yet been persisted to the database. You will need to call `save` manually to persist it:
+Method `firstOrNew` sama seperti `firstOrCreate` yang akan mencoba untuk mencari data terlebih dahulu, jika tidak ditemukan, maka method ini akan mengembalikan sebuah *instance* baru dari model tersebut. Perhatikan bahwa model yang dikembalikan oleh `firstOrNew` tidak ada di database, untuk itu harus method `save` harus dipanggil:
 
     // Retrieve flight by name, or create it if it doesn't exist...
     $flight = App\Flight::firstOrCreate(['name' => 'Flight 10']);
-
+    
     // Retrieve flight by name, or create it with the name and delayed attributes...
     $flight = App\Flight::firstOrCreate(
         ['name' => 'Flight 10'], ['delayed' => 1]
     );
-
+    
     // Retrieve by name, or instantiate...
     $flight = App\Flight::firstOrNew(['name' => 'Flight 10']);
-
+    
     // Retrieve by name, or instantiate with the name and delayed attributes...
     $flight = App\Flight::firstOrNew(
         ['name' => 'Flight 10'], ['delayed' => 1]
@@ -404,7 +403,7 @@ The `firstOrNew` method, like `firstOrCreate` will attempt to locate a record in
 
 #### `updateOrCreate`
 
-You may also come across situations where you want to update an existing model or create a new model if none exists. Laravel provides an `updateOrCreate` method to do this in one step. Like the `firstOrCreate` method, `updateOrCreate` persists the model, so there's no need to call `save()`:
+Anda mungkin akan berhadapan pada situasi dimana anda ingin memperbarui model yang sudah ada atau membuatnya jika belum ada. Laravel memiliki method `updateOrCreate` untuk hal ini. Method ini sama seperti `firstOrCreate`, jadi tidak perlu memanggil `save`:
 
     // If there's a flight from Oakland to San Diego, set the price to $99.
     // If no matching model exists, create one.
@@ -416,7 +415,7 @@ You may also come across situations where you want to update an existing model o
 <a name="deleting-models"></a>
 ## Deleting Models
 
-To delete a model, call the `delete` method on a model instance:
+Untuk menghapus sebuah model, panggil method `delete`:
 
     $flight = App\Flight::find(1);
 
@@ -424,7 +423,7 @@ To delete a model, call the `delete` method on a model instance:
 
 #### Deleting An Existing Model By Key
 
-In the example above, we are retrieving the model from the database before calling the `delete` method. However, if you know the primary key of the model, you may delete the model without retrieving it. To do so, call the `destroy` method:
+Pada contoh diatas, kita menerima data dari database sebelum memanggil method `delete`. Tetapi, jika anda tahu primary key dari suatu model, anda tidak perlu menerima atau mencari datanya terlebih dahulu, tinggal hapus saja seperti kode di bawah:
 
     App\Flight::destroy(1);
 
@@ -443,7 +442,7 @@ Of course, you may also run a delete statement on a set of models. In this examp
 <a name="soft-deleting"></a>
 ### Soft Deleting
 
-In addition to actually removing records from your database, Eloquent can also "soft delete" models. When models are soft deleted, they are not actually removed from your database. Instead, a `deleted_at` attribute is set on the model and inserted into the database. If a model has a non-null `deleted_at` value, the model has been soft deleted. To enable soft deletes for a model, use the `Illuminate\Database\Eloquent\SoftDeletes` trait on the model and add the `deleted_at` column to your `$dates` property:
+Dalam rangka untuk menghapus data dari database anda, Eloquent memiliki fitur "soft delete". Yang mana ketika suatu data dihapus menggunakan *soft delete*, maka sebenarnya data tersebut tidaklah benar-benar dihapus, melainkan data tersebut tidak akan lagi ditampilkan, dan atribut `deleted_at` akan diisi dengan nilai tanggal kapan data tersebut dihapus. Untuk memberikan fitur *soft delete* pada model anda, gunakan trait `lluminate\Database\Eloquent\SoftDeletes`, dan tambahkan kolom `deleted_at` serta properti `$dates`:
 
     <?php
 
@@ -451,11 +450,11 @@ In addition to actually removing records from your database, Eloquent can also "
 
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\SoftDeletes;
-
+    
     class Flight extends Model
     {
         use SoftDeletes;
-
+    
         /**
          * The attributes that should be mutated to dates.
          *
@@ -464,15 +463,15 @@ In addition to actually removing records from your database, Eloquent can also "
         protected $dates = ['deleted_at'];
     }
 
-Of course, you should add the `deleted_at` column to your database table. The Laravel [schema builder](/docs/{{version}}/migrations) contains a helper method to create this column:
+Tentu saja, anda harus punya kolom `deleted_at` di tabel database anda. Laravel [schema builder](/docs/{{version}}/migrations) memiliki method - method berguna untuk membantu anda membuatkan kolom:
 
     Schema::table('flights', function ($table) {
         $table->softDeletes();
     });
 
-Now, when you call the `delete` method on the model, the `deleted_at` column will be set to the current date and time. And, when querying a model that uses soft deletes, the soft deleted models will automatically be excluded from all query results.
+Sekarang, saat anda memanggil method `delete` pada suatu model, kolom `deleted_at` akan diisi oleh tanggal dan waktu disaat method tersebut dipanggil, seperti yang sudah dijelaskan diatas. Eloquent nantinya akan mengecualikan data-data yang sudah dihapus secara *soft* agar tidak diambil.
 
-To determine if a given model instance has been soft deleted, use the `trashed` method:
+Untuk mengetahui apakah suatu data merupakan data yang *soft deleted*, gunakan method `trashed`:
 
     if ($flight->trashed()) {
         //
@@ -483,7 +482,7 @@ To determine if a given model instance has been soft deleted, use the `trashed` 
 
 #### Including Soft Deleted Models
 
-As noted above, soft deleted models will automatically be excluded from query results. However, you may force soft deleted models to appear in a result set using the `withTrashed` method on the query:
+Seperti yang disebutkan diatas, data yang *soft deleted* akan dikecualikan dari pengambilan data. Akan tetapi, jika anda ingin data yang *soft deleted* juga diambil dan ditampilkan, gunakan method `withTrashed`: 
 
     $flights = App\Flight::withTrashed()
                     ->where('account_id', 1)
@@ -491,11 +490,13 @@ As noted above, soft deleted models will automatically be excluded from query re
 
 The `withTrashed` method may also be used on a [relationship](/docs/{{version}}/eloquent-relationships) query:
 
+Method `withTrashed` juga bisa digunakan pada suatu kueri [relationship](/docs/{{version}}/eloquent-relationships) : 
+
     $flight->history()->withTrashed()->get();
 
 #### Retrieving Only Soft Deleted Models
 
-The `onlyTrashed` method will retrieve **only** soft deleted models:
+Method `onlyTrashed` akan menerima data yang sudah di *soft delete*:
 
     $flights = App\Flight::onlyTrashed()
                     ->where('airline_id', 1)
@@ -503,27 +504,26 @@ The `onlyTrashed` method will retrieve **only** soft deleted models:
 
 #### Restoring Soft Deleted Models
 
-Sometimes you may wish to "un-delete" a soft deleted model. To restore a soft deleted model into an active state, use the `restore` method on a model instance:
+Kadang mungkin anda ingin membatalkan *soft delete* pada suatu data. Untuk melakukannya, gunakan method `restore`
 
     $flight->restore();
-
-You may also use the `restore` method in a query to quickly restore multiple models. Again, like other "mass" operations, this will not fire any model events for the models that are restored:
+Anda juga mungkin menggunakan method `restore` pada suatu kueri seperti contoh di bawah.
 
     App\Flight::withTrashed()
             ->where('airline_id', 1)
             ->restore();
 
-Like the `withTrashed` method, the `restore` method may also be used on [relationships](/docs/{{version}}/eloquent-relationships):
+Seperti model `withTrashed`, method `restore` bisa digunakan untuk [relationships](/docs/{{version}}/eloquent-relationships)
 
     $flight->history()->restore();
 
 #### Permanently Deleting Models
 
-Sometimes you may need to truly remove a model from your database. To permanently remove a soft deleted model from the database, use the `forceDelete` method:
+Kadang anda ingin menghapus suatu data secara permanen, walaupun data tersebut merupakan milik suatu model yang memiliki properti *soft delete*. Untuk menghapus data secara permanen, gunakan method `forceDelete`: 
 
     // Force deleting a single model instance...
     $flight->forceDelete();
-
+    
     // Force deleting all related models...
     $flight->history()->forceDelete();
 
@@ -533,11 +533,11 @@ Sometimes you may need to truly remove a model from your database. To permanentl
 <a name="global-scopes"></a>
 ### Global Scopes
 
-Global scopes allow you to add constraints to all queries for a given model. Laravel's own [soft delete](#soft-deleting) functionality utilizes global scopes to only pull "non-deleted" models from the database. Writing your own global scopes can provide a convenient, easy way to make sure every query for a given model receives certain constraints.
+*Global scopes* memungkinkan anda untuk menambahkan konstrain kepada semua kueri pada suatu model. Fitur Laravel seperti [soft delete](#soft-deleting) juga menggunakan *global scopes* untuk menarik model "non-deleted" dari database. Anda bisa membuat *global scope* anda sendiri secara mudah.
 
 #### Writing Global Scopes
 
-Writing a global scope is simple. Define a class that implements the `Illuminate\Database\Eloquent\Scope` interface. This interface requires you to implement one method: `apply`. The `apply` method may add `where` constraints to the query as needed:
+Membuat *global scope* sangat simpel. Definisikan sebuah kelas yang mengimplementasi interface `Illuminate\Database\Eloquent\Scope`. Interface yang anda definisikan memiliki satu method `apply`. Method ini bisa digunakan dengan konstrain `where` ketika diperlukan.
 
     <?php
 
@@ -546,7 +546,7 @@ Writing a global scope is simple. Define a class that implements the `Illuminate
     use Illuminate\Database\Eloquent\Scope;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Builder;
-
+    
     class AgeScope implements Scope
     {
         /**
@@ -562,11 +562,11 @@ Writing a global scope is simple. Define a class that implements the `Illuminate
         }
     }
 
-> {tip} If your global scope is adding columns to the select clause of the query, you should use the `addSelect` method instead of `select`. This will prevent the unintentional replacement of the query's existing select clause.
+> {tip} Jika global scope menambahkan kolom - kolom pada kalusa *select* dari suatu kueri, anda harus menggunakan method `addSelect` ketimbang `select`. Hal ini untuk mencegah pergantian suatu klausa select yang tidak diinginkan.
 
 #### Applying Global Scopes
 
-To assign a global scope to a model, you should override a given model's `boot` method and use the `addGlobalScope` method:
+Untuk menetapkan *global scope* pada suatu model, anda harus menindih model tersebut dengan method `boot` dan gunakan method `addGlobalScope`: 
 
     <?php
 
@@ -574,7 +574,7 @@ To assign a global scope to a model, you should override a given model's `boot` 
 
     use App\Scopes\AgeScope;
     use Illuminate\Database\Eloquent\Model;
-
+    
     class User extends Model
     {
         /**
@@ -585,18 +585,18 @@ To assign a global scope to a model, you should override a given model's `boot` 
         protected static function boot()
         {
             parent::boot();
-
+    
             static::addGlobalScope(new AgeScope);
         }
     }
 
-After adding the scope, a query to `User::all()` will produce the following SQL:
+Setelah menambahkan scope, tambahkan kueri `User::all()` yang akan memproduksi SQL sebagai berikut:
 
     select * from `users` where `age` > 200
 
 #### Anonymous Global Scopes
 
-Eloquent also allows you to define global scopes using Closures, which is particularly useful for simple scopes that do not warrant a separate class:
+Eloquent memungkinkan anda untuk mendefinisikan *global scope* menggunakan Closures, yang mana berguna untuk suatu *scope* yang tidak terpisah dari suatu class:
 
     <?php
 
@@ -604,7 +604,7 @@ Eloquent also allows you to define global scopes using Closures, which is partic
 
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Builder;
-
+    
     class User extends Model
     {
         /**
@@ -615,7 +615,7 @@ Eloquent also allows you to define global scopes using Closures, which is partic
         protected static function boot()
         {
             parent::boot();
-
+    
             static::addGlobalScope('age', function (Builder $builder) {
                 $builder->where('age', '>', 200);
             });
@@ -624,19 +624,17 @@ Eloquent also allows you to define global scopes using Closures, which is partic
 
 #### Removing Global Scopes
 
-If you would like to remove a global scope for a given query, you may use the `withoutGlobalScope` method. The method accepts the class name of the global scope as its only argument:
+Jika anda ingin menghapus suatu *global scope* pada suatu kueri, anda bisa menggunakan method `withoutGlobalScope`. Method ini menerima nama kelas pada *global scope* sebagai argumen:
 
     User::withoutGlobalScope(AgeScope::class)->get();
-
-Or, if you defined the global scope using a Closure:
+Atau, jika anda mendefinisikan sebuah *global scope* dengan Closure:
 
     User::withoutGlobalScope('age')->get();
-
-If you would like to remove several or even all of the global scopes, you may use the `withoutGlobalScopes` method:
+Jika anda ingin menghapus beebrapa atau semua *global scope*, anda bisa gunakan method `withoutGlobalScopes`: 
 
     // Remove all of the global scopes...
     User::withoutGlobalScopes()->get();
-
+    
     // Remove some of the global scopes...
     User::withoutGlobalScopes([
         FirstScope::class, SecondScope::class
@@ -645,9 +643,9 @@ If you would like to remove several or even all of the global scopes, you may us
 <a name="local-scopes"></a>
 ### Local Scopes
 
-Local scopes allow you to define common sets of constraints that you may easily re-use throughout your application. For example, you may need to frequently retrieve all users that are considered "popular". To define a scope, prefix an Eloquent model method with `scope`.
+Local scopes allow you to define common sets of constraints that you may easily re-use throughout your application. For efinisikan konstrain - konstrain yang anda mungkin akan gunakan berkali-kali kembali pada aplikasi anda, seperti anda mungkin harus mengambil semua pengguna yang "populer". Untuk mendefinisikan sebuah scope, Eloquent menggunakan method `scope`. 
 
-Scopes should always return a query builder instance:
+Scope selalu mengembalikan *instance* dari builder:
 
     <?php
 
@@ -667,7 +665,7 @@ Scopes should always return a query builder instance:
         {
             return $query->where('votes', '>', 100);
         }
-
+    
         /**
          * Scope a query to only include active users.
          *
@@ -682,13 +680,13 @@ Scopes should always return a query builder instance:
 
 #### Utilizing A Local Scope
 
-Once the scope has been defined, you may call the scope methods when querying the model. However, you should not include the `scope` prefix when calling the method. You can even chain calls to various scopes, for example:
+Setelah *scope* didefinisikan, anda mungkin dapat memanggil method *scope* ketika melakukan kueri suatu model. Tetapi, anda tidak harus menyisipkan prefix `scope` ketika memanggil method. Anda bahkan dapat merantai atau menyambungkannya pada scope-scope lainnya, contoh: 
 
     $users = App\User::popular()->active()->orderBy('created_at')->get();
 
 #### Dynamic Scopes
 
-Sometimes you may wish to define a scope that accepts parameters. To get started, just add your additional parameters to your scope. Scope parameters should be defined after the `$query` parameter:
+Kadang anda ingin mendefinisikan sebuah scope yang menerima parameter. Untuk memulai, tambahkan parameter pada scope anda. Parameter scope tersebut harus didefinisikan setelah parameter `$query`:
 
     <?php
 
@@ -711,18 +709,20 @@ Sometimes you may wish to define a scope that accepts parameters. To get started
         }
     }
 
-Now, you may pass the parameters when calling the scope:
+Sekarang, anda bisa kirimkan parameter-parameter ketika memanggil scope:
 
     $users = App\User::ofType('admin')->get();
 
 <a name="events"></a>
 ## Events
 
-Eloquent models fire several events, allowing you to hook into the following points in a model's lifecycle: `retrieved`, `creating`, `created`, `updating`, `updated`, `saving`, `saved`, `deleting`, `deleted`, `restoring`, `restored`. Events allow you to easily execute code each time a specific model class is saved or updated in the database.
+Model Eloquent turut memanggil atau menjalankan beberapa event-event, memungkinkan anda untuk turut memanggil beberapa dari model lifecycle seperti: `retrieved`, `creating`, `created`, `updating`, `updated`, `saving`, `saved`, `deleting`, `deleted`, `restoring`, `restored`. Event-event memudahkan anda untuk mengeksekusi kode setiap kali suatu kelas model disimpan atau diperbarui di dalam database.
 
 The `retrieved` event will fire when an existing model is retrieved from the database. When a new model is saved for the first time, the `creating` and `created` events will fire. If a model already existed in the database and the `save` method is called, the `updating` / `updated` events will fire. However, in both cases, the `saving` / `saved` events will fire.
 
-To get started, define a `$dispatchesEvents` property on your Eloquent model that maps various points of the Eloquent model's lifecycle to your own [event classes](/docs/{{version}}/events):
+Event yang di `retrieved` akan terpanggil ketika sebuah model yang sudah ada di database dipanggil dari database. Ketika model baru disimpan untuk pertama kali, maka event `creating` dan `created` yang akan terpanggil. Jika sebuah model sudah ada di database dan method `save` dipanggil, maka event `updating` / `updated` yang akan terpanggil. Jika ada skenario keduanya maka event `saving` / `saved` yang akan terpanggil 
+
+Untuk memulai, definisikan `$dispatchesEvents` pada model Eloquent anda yang menuju pada beberapa lifecycle tadi: 
 
     <?php
 
@@ -732,11 +732,11 @@ To get started, define a `$dispatchesEvents` property on your Eloquent model tha
     use App\Events\UserDeleted;
     use Illuminate\Notifications\Notifiable;
     use Illuminate\Foundation\Auth\User as Authenticatable;
-
+    
     class User extends Authenticatable
     {
         use Notifiable;
-
+    
         /**
          * The event map for the model.
          *
@@ -751,7 +751,7 @@ To get started, define a `$dispatchesEvents` property on your Eloquent model tha
 <a name="observers"></a>
 ### Observers
 
-If you are listening for many events on a given model, you may use observers to group all of your listeners into a single class. Observers classes have method names which reflect the Eloquent events you wish to listen for. Each of these methods receives the model as their only argument. Laravel does not include a default directory for observers, so you may create any directory you like to house your observer classes:
+Jika anda mendengarkan banyak event pada model tertentu, anda bisa menggunakan *observers* untuk mengrupkan *listener - listener* anda ke dalam suatu class. Kelas *Observer* memiliki nama method yang berefleksi pada event Eloquent yang anda dengarkan. Setiap method - method tersebut menerima model sebagai argumen satu-satunya. Laravel tidak memasukkan direktori bawaan untuk suatu Observer, jadi anda bebas untuk membuatnya dan meletakkannya dimana saja:
 
     <?php
 
@@ -771,7 +771,7 @@ If you are listening for many events on a given model, you may use observers to 
         {
             //
         }
-
+    
         /**
          * Listen to the User deleting event.
          *
@@ -784,7 +784,7 @@ If you are listening for many events on a given model, you may use observers to 
         }
     }
 
-To register an observer, use the `observe` method on the model you wish to observe. You may register observers in the `boot` method of one of your service providers. In this example, we'll register the observer in the `AppServiceProvider`:
+Untuk register suatu observer, gunakan method `observe` pada model yang ingin anda pantau. anda mungkin perlu register observer pada method `boot` di salah satu *service provider* yang anda miliki. Contoh, kita akan meregister observer pada `AppServiceProvider`:
 
     <?php
 
@@ -793,7 +793,7 @@ To register an observer, use the `observe` method on the model you wish to obser
     use App\User;
     use App\Observers\UserObserver;
     use Illuminate\Support\ServiceProvider;
-
+    
     class AppServiceProvider extends ServiceProvider
     {
         /**
@@ -805,7 +805,7 @@ To register an observer, use the `observe` method on the model you wish to obser
         {
             User::observe(UserObserver::class);
         }
-
+    
         /**
          * Register the service provider.
          *
