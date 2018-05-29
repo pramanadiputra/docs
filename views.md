@@ -8,9 +8,9 @@
 <a name="creating-views"></a>
 ## Creating Views
 
-> {tip} Looking for more information on how to write Blade templates? Check out the full [Blade documentation](/docs/{{version}}/blade) to get started.
+> {tip} Sedang mencari informasi mengenai Blade Template? Cek [Dokumentasi Blade](/docs/{{version}}/blade) lengkap untuk memulai. 
 
-Views contain the HTML served by your application and separate your controller / application logic from your presentation logic. Views are stored in the `resources/views` directory. A simple view might look something like this:
+*Views* berisikan HTML yang disuplai oleh aplikasi anda dan dipisahkan oleh *controller* dari *presentation logic*. *Views* tersimpan di dalam direktori `resources/views`. Berikut ini contoh *view* yang sederhana:
 
     <!-- View stored in resources/views/greeting.blade.php -->
 
@@ -20,21 +20,21 @@ Views contain the HTML served by your application and separate your controller /
         </body>
     </html>
 
-Since this view is stored at `resources/views/greeting.blade.php`, we may return it using the global `view` helper like so:
+Karena *view* diatas disimpan di `resources/views/greeting.blade.php`, kita bisa melakukan *return* dengan method `view` yang bersifat global, seperti:
 
     Route::get('/', function () {
         return view('greeting', ['name' => 'James']);
     });
 
-As you can see, the first argument passed to the `view` helper corresponds to the name of the view file in the `resources/views` directory. The second argument is an array of data that should be made available to the view. In this case, we are passing the `name` variable, which is displayed in the view using [Blade syntax](/docs/{{version}}/blade).
+Seperti yang anda bisa lihat, argumen pertama dikirimkan ke `view` merupakan nama dari berkas *view* yang ada di dalam direktori `resources/views`, yakni `greeting.blade.php`. Lalu pada argumen kedua adalah sebuah array yang berisikan data yang nantinya bisa ditampilkan di dalam *view*. Pada contoh ini, kita mengirimkan variabel nama, yang mana nantinya akan ditampilkan oleh [Blade syntax](/docs/{{version}}/blade).
 
-Of course, views may also be nested within sub-directories of the `resources/views` directory. "Dot" notation may be used to reference nested views. For example, if your view is stored at `resources/views/admin/profile.blade.php`, you may reference it like so:
+Tentu saja, *views* juga bisa diletakkan pada sub-direktori dari `resources/views`. Notasi "Dot" akan digunakan untuk mereferensi *views* yang berada pada sub. Untuk contihnya, jika *view* anda terletak pada `resources/views/admin/profile.blade.php`, anda bisa mereferensikannya seperti contoh:
 
     return view('admin.profile', $data);
 
 #### Determining If A View Exists
 
-If you need to determine if a view exists, you may use the `View` facade. The `exists` method will return `true` if the view exists:
+Jika anda butuh mengecek apakah suatu *view* sudah ada atau belum, anda bisa menggunakan *facade* `View`. Method `exists` akan mengembalikan nilai `true` apabila *view* tersebut sudah ada. 
 
     use Illuminate\Support\Facades\View;
 
@@ -44,11 +44,10 @@ If you need to determine if a view exists, you may use the `View` facade. The `e
 
 #### Creating The First Available View
 
-Using the `first` method, you may create the first view that exists in a given array of views. This is useful if your application or package allows views to be customized or overwritten:
+Gunakan method `first`, jika anda ingin membuat sebuah *view* pertama yang sudah ada pada suatu array yang terdiri dari *view-view*. Ini berguna agar aplikasi anda memungkinkan agar *view-view* tersebut untuk dikostumisasi dan ditimpa: 
 
     return view()->first(['custom.admin', 'admin'], $data);
-
-Of course, you may also call this method via the `View` [facade](/docs/{{version}}/facades):
+Dan tentu, jika anda ingin memanggil method tersebut melalui *facade* `View`:
 
     use Illuminate\Support\Facades\View;
 
@@ -57,18 +56,17 @@ Of course, you may also call this method via the `View` [facade](/docs/{{version
 <a name="passing-data-to-views"></a>
 ## Passing Data To Views
 
-As you saw in the previous examples, you may pass an array of data to views:
+Seperti yang anda lihat pada contoh sebelumnya, anda bisa mengirimkan data berupa array kepada *view*:
 
     return view('greetings', ['name' => 'Victoria']);
-
-When passing information in this manner, the data should be an array with key / value pairs. Inside your view, you can then access each value using its corresponding key, such as `<?php echo $key; ?>`. As an alternative to passing a complete array of data to the `view` helper function, you may use the `with` method to add individual pieces of data to the view:
+Ketika mengirimkan informasi seperti ini, data harus berupa array dan memiliki *key/value*. Di dalam view, anda bisa mengakses masing-masing nilai dengan key-nya sama seperti `<?php echo $key; ?>`. Adapun alternatif lain untuk mengirimkan data berupa array ke `view` adalah dengan method `with` yang bisa digunakan untuk mengirimkan data individu ke *view*:
 
     return view('greeting')->with('name', 'Victoria');
 
 <a name="sharing-data-with-all-views"></a>
 #### Sharing Data With All Views
 
-Occasionally, you may need to share a piece of data with all views that are rendered by your application. You may do so using the view facade's `share` method. Typically, you should place calls to `share` within a service provider's `boot` method. You are free to add them to the `AppServiceProvider` or generate a separate service provider to house them:
+Kadang kala, mungkin anda butuh membagikan atau mengirimkan sejumlah data dengan semua *view* yang ada pada aplikasi anda, sehingga anda tidak perlu mendefinisikannya satu-satu. Anda bisa melakukan hal tersebut dengan method `share` dari *view* facade. Pada dasarnya, anda harus melakukan pemanggilan method `share` di dalam sebuah method `boot` yang ada di service provider. Anda bebas untuk menggunakan service provider apapun, entah itu `AppServiceProvider` ataupun buat service provider lain: 
 
     <?php
 
@@ -87,7 +85,7 @@ Occasionally, you may need to share a piece of data with all views that are rend
         {
             View::share('key', 'value');
         }
-
+    
         /**
          * Register the service provider.
          *
@@ -102,9 +100,9 @@ Occasionally, you may need to share a piece of data with all views that are rend
 <a name="view-composers"></a>
 ## View Composers
 
-View composers are callbacks or class methods that are called when a view is rendered. If you have data that you want to be bound to a view each time that view is rendered, a view composer can help you organize that logic into a single location.
+*View Composer* merupakan sebuah *callback* atau *method kelas* yang akan dipanggil ketika *view* dirender oleh aplikasi. Jika anda memiliki data yang anda ingin hubungkan pada suatu *view* setiap kali *view* tersebut dirender, maka sebuah *view composer* akan sangat membantu anda dalam mengorganisasikan hal tersebut di tempat yang sama.
 
-For this example, let's register the view composers within a [service provider](/docs/{{version}}/providers). We'll use the `View` facade to access the underlying `Illuminate\Contracts\View\Factory` contract implementation. Remember, Laravel does not include a default directory for view composers. You are free to organize them however you wish. For example, you could create an `app/Http/ViewComposers` directory:
+Untuk contoh, ayo *register* suatu *view composer* di dalam sebuah service provider. Kita akan gunakan facade `View` untuk mengakses informasi kontrak yang berada di `Illuminate\Contracts\View\Factory`. Perlu diingat, Laravel tidak mengatur direktori untuk *view composer*, anda bebas untuk meletakkan *view composer* anda dimana saja. Contoh, anda mungkin akan meletakkan *view composer* di direktori `app/Http/ViewComposers`: 
 
     <?php
 
@@ -112,7 +110,7 @@ For this example, let's register the view composers within a [service provider](
 
     use Illuminate\Support\Facades\View;
     use Illuminate\Support\ServiceProvider;
-
+    
     class ComposerServiceProvider extends ServiceProvider
     {
         /**
@@ -126,13 +124,13 @@ For this example, let's register the view composers within a [service provider](
             View::composer(
                 'profile', 'App\Http\ViewComposers\ProfileComposer'
             );
-
+    
             // Using Closure based composers...
             View::composer('dashboard', function ($view) {
                 //
             });
         }
-
+    
         /**
          * Register the service provider.
          *
@@ -144,9 +142,9 @@ For this example, let's register the view composers within a [service provider](
         }
     }
 
-> {note} Remember, if you create a new service provider to contain your view composer registrations, you will need to add the service provider to the `providers` array in the `config/app.php` configuration file.
+> {note} Ingat, jika anda membuat sebuah service provider baru yang berisi registrasi *view composer*, anda perlu menambahkan service provider ke dalam array `providers` yang ada di dalam berkas `config/app.php`. 
 
-Now that we have registered the composer, the `ProfileComposer@compose` method will be executed each time the `profile` view is being rendered. So, let's define the composer class:
+Sekarang kita telah memiliki *view composer* yang sudah diregistrasi, method `ProfileComposer@compose` akan dieksekusi setiap kali *view* `profile` dirender. Maka, ayo kita definisikan kelas composer:
 
     <?php
 
@@ -154,7 +152,7 @@ Now that we have registered the composer, the `ProfileComposer@compose` method w
 
     use Illuminate\View\View;
     use App\Repositories\UserRepository;
-
+    
     class ProfileComposer
     {
         /**
@@ -163,7 +161,7 @@ Now that we have registered the composer, the `ProfileComposer@compose` method w
          * @var UserRepository
          */
         protected $users;
-
+    
         /**
          * Create a new profile composer.
          *
@@ -175,7 +173,7 @@ Now that we have registered the composer, the `ProfileComposer@compose` method w
             // Dependencies automatically resolved by service container...
             $this->users = $users;
         }
-
+    
         /**
          * Bind data to the view.
          *
@@ -188,20 +186,22 @@ Now that we have registered the composer, the `ProfileComposer@compose` method w
         }
     }
 
-Just before the view is rendered, the composer's `compose` method is called with the `Illuminate\View\View` instance. You may use the `with` method to bind data to the view.
+Tepat sebelum *view* dirender, method `compose` akan dipanggil di dalam suatu *instance* dari `Illuminate\View\View`. Anda bisa menggunakan method `with` untuk melakukan binding suatu data ke *view*.
 
-> {tip} All view composers are resolved via the [service container](/docs/{{version}}/container), so you may type-hint any dependencies you need within a composer's constructor.
+> {tip} Semua *view composers* dikenali melalui [service container](/docs/{{version}}/container), jadi anda mungkin harus mengetik setiap ketergantungan yang anda butuhkan di dalam konstruktor pada composer. 
 
 #### Attaching A Composer To Multiple Views
 
 You may attach a view composer to multiple views at once by passing an array of views as the first argument to the `composer` method:
+
+Anda mungkin bisa menyisipkan sebuah *view composer* pada banyak *view* dalam satu waktu dengan mengirimkan *view-view* berupa array sebagai argumen pertama dengan method `composer`: 
 
     View::composer(
         ['profile', 'dashboard'],
         'App\Http\ViewComposers\MyViewComposer'
     );
 
-The `composer` method also accepts the `*` character as a wildcard, allowing you to attach a composer to all views:
+Method `composer` juga menerima karakter `*` sebagai suatu *wildcard*, memungkinkan anda untuk menyisipkan sebuah composer ke semua *view* tanpa terkecuali. 
 
     View::composer('*', function ($view) {
         //
@@ -209,6 +209,6 @@ The `composer` method also accepts the `*` character as a wildcard, allowing you
 
 #### View Creators
 
-View **creators** are very similar to view composers; however, they are executed immediately after the view is instantiated instead of waiting until the view is about to render. To register a view creator, use the `creator` method:
+*View Creators* sangat mirip dengan *view composer*, tetapi, mereka dieksekusi langsung disaat suatu *view* dipanggil ketimbang menunggu saat suatu *view* akan dirender. Untuk meregistrasi suatu *view creator*, gunakan method `creator`: 
 
     View::creator('profile', 'App\Http\ViewCreators\ProfileCreator');
